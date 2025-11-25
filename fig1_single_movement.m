@@ -86,21 +86,18 @@ end
 
 
 
-%% 地形图
+%% Topomap
 figure1 = figure('Colormap', slanCM('coolwarm'), 'Position', [573,311.6,120,446]);
-% 创建 axes
+
 axes1 = axes('Parent', figure1);
 axis off
 
-% 取消以下行的注释以保留坐标区的 X 范围
-% xlim(axes1,[0.5 1.5]);
-% 取消以下行的注释以保留坐标区的 Y 范围
-% ylim(axes1,[0.5 1.5]);
 box(axes1,'on');
 axis(axes1,'ij');
-% 设置其余坐标区属性
+
 set(axes1, 'CLim',[-0.075 0.075], 'Layer','top');
-% 创建 colorbar
+
+% colorbar
 colorbar(axes1,'Position',[0.4 0.2 0.2 0.6],...
     'Ticks',[0 0.025 0.050 0.075],...,
     'TickLength', 0, ...
@@ -109,7 +106,7 @@ colorbar(axes1,'Position',[0.4 0.2 0.2 0.6],...
     'Box', 'off', ...
     'Limits',[0 0.075]);
 
-% 创建 textbox
+% textbox
 annotation(figure1,'textbox',...
     [0.238674033149171 0.0338164251207729 0.584530386740332 0.143301127214171],...
     'String',{'RMS','amplitude','(a.u.)'},...
@@ -117,6 +114,7 @@ annotation(figure1,'textbox',...
     'FontSize',9,...
     'FitBoxToText','off',...
     'EdgeColor','none');
+
 
 
 
