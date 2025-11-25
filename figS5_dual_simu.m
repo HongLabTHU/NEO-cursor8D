@@ -1,11 +1,8 @@
-%% 生成基础数据
+%% dual surrogate dataset
 clear
 clc
 
-load('data.mat');
-% fb = fb(1:51);
-% Spectra = Spectra(1:51, :, :);
-
+load('data\PSDdata.mat');
 option.fs = 1000;
 option.tmin = 0;
 option.tmax = 1;
@@ -30,7 +27,7 @@ fileuse = 8:53;
 
 
 
-%% 生成代理数据回归结果
+%%  virtual surrogate dataset regression
 [Param{1}, Rsquared{1}, modelP{1}] = check_surro_fit(data_A, data_B, spt_A, spt_B, fb, option);
 [Param{2}, Rsquared{2}, modelP{2}] = check_surro_fit(data_A, data_C, spt_A, spt_C, fb, option);
 [Param{3}, Rsquared{3}, modelP{3}] = check_surro_fit(data_B, data_D, spt_B, spt_D, fb, option);
@@ -38,7 +35,7 @@ fileuse = 8:53;
 
 
 
-%% 散点图
+%% 
 Tbox = {'LE plus LH', 'LE plus RE', 'LH plus RH', 'RE plus RH'}; % 
 A1 = {'LE', 'LE', 'LH', 'RE';
       'LH', 'RE', 'RH', 'RH'};
@@ -64,7 +61,6 @@ for i = 1:4
     axis(ax1, [-1.5 3 -1.5 3]);
     title(Tbox{i}, 'FontName', 'Arial', 'FontSize', 10);
 
-    % 统计图
     ax2 = axes("Position", [0.29 0.29 0.5*sqrt(2) 0.5*sqrt(2)]);
     resp = (Param{i}(:, 1) - Param{i}(:, 2))/sqrt(2);
     histogram(ax2, resp, 20, 'FaceAlpha', 0.25, 'FaceColor', [137 170 215]/255,...
@@ -80,7 +76,7 @@ end
 
 
 
-%% 柱状图
+%% bar
 ind = [1 4 7 10
     2 5 8 11];
 figure('Position', [573,557.7,525,200]);
@@ -185,52 +181,3 @@ end
 
 end
 
-
-
-
-%% A and B
-% num = min(length(spt_A), length(spt_B));
-%
-%
-% Param = []; Rsquared = []; modelP = [];
-% for u = 0.5:0.05:1.1
-%     X = zeros(num, sum(fb>sfb)*8);
-%     x_a = zeros(num, sum(fb>sfb), 8);
-%     x_b = zeros(num, sum(fb>sfb), 8);
-%     for i = 1:num
-%         Q = u*data_A{i} + u*data_B{i};
-%         Q = NEO_reref(Q, 'average');
-%         % Q = highpass(Q', 50, 1000)';
-%         [SS, fb] = neo_calc_spectra(Q, [0 0 0], option);
-%         SS = sqrt(SS(fb>sfb, :)) - baseline;
-%         % SS = bsxfun(@minus, SS, mean(SS) - re_aline);
-%         X(i, :) = SS(:)';
-%
-%         x_a(i, :, :) = sqrt(spt_A{i}(fb>sfb, :));
-%         x_b(i, :, :) = sqrt(spt_B{i}(fb>sfb, :));
-%     end
-%
-%     X = [mean(X); X];
-%     x_a = mean(x_a(:, :))' - baseline(:);
-%     x_b = mean(x_b(:, :))' - baseline(:);
-%
-%     mdl = fitlm([x_a, x_b], X(1, :)', 'Intercept', false);
-%     Param = [Param; [mdl.Coefficients{1,1} mdl.Coefficients{2,1}]];
-%     Rsquared = [Rsquared mdl.Rsquared.Ordinary]; % 获取拟合模型的 R-squared 值
-%     modelP = [modelP mdl.ModelFitVsNullModel.Pvalue];
-%     u
-% end
-%
-% %%
-% scatter(Param(:, 1), Param(:, 2), 8, Rsquared, 'filled');
-% hold on
-% colormap(slanCM('Greys'));
-% grid on
-% cbar = colorbar(); cbar.Limits = [0.5 1];
-% plot([-3 3], [-3 3], '--', 'Color', [0.5 0.5 0.5]);
-% xlabel('$W_{LE}$', "Interpreter", "latex");
-% ylabel('$W_{LH}$', "Interpreter", "latex");
-% xline(0)
-% yline(0)
-% axis([-1.5 2.5 -2 3])
-% axis equal
