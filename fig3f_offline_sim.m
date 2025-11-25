@@ -3,8 +3,8 @@
 clear;
 clc
 
-% 混淆矩阵，信道传输矩阵
-C = load('C.mat');
+% confusion
+C = load('data\Confusion.mat');
 
 
 Pv = [0         0;
@@ -136,4 +136,5 @@ x = x + normrnd(0, 0.4, 1);
 u = 0.2*tanh(x) + 0.8;
 u = (1-m_porb(1).^0.25) .* u;
 end
+
 
