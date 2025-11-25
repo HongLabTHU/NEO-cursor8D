@@ -1,5 +1,5 @@
 %% Center-out Task performance
-clear;clc
+clear; clc
 rootDir = 'behave\webgrid';
 Flist = findMatFilesByName(rootDir, 'Web');
 useid = 1:5;
@@ -61,4 +61,5 @@ function matFiles = findMatFilesByName(rootDir, searchStr)
     matFiles = arrayfun(@(x) fullfile(x.folder, x.name), files, 'UniformOutput', false);
     matFiles = matFiles(:);
 end
+
 
