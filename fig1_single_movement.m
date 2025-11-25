@@ -1,23 +1,9 @@
-%% single movement anayl
+%% single movement Neural response
 clear
 clc
 
-option.fs = 1000;
-option.tmin = 0;
-option.tmax = 1;
-option.fpoint = 201;  % 201;
-option.fmax = 150;  % 100;
-option.maxnff = 512;  % 256;
-option.tps = [-1000 200];
+load('data.mat');
 
-fileuse = 8:53;
-load('E:\MATLAB_softhub\SPMdataset\NEO_TT01\XB_data\readme.mat')
-data_root = 'E:\MATLAB_softhub\SPMdataset\NEO_TT01\XB_data\';
-
-[Spectra, Ylab, fb] = Step0_psd_dataset(Label, data_root, fileuse, option);
-
-% Preprocess_funy = @(Ylab) Ylab;
-% Preprocess_funx = @(Spectra) bsxfun(@minus, sqrt(Spectra), mean(sqrt(Spectra(:, :, Ylab==100)), 3));
 Preprocess_funy = @(Ylab) Ylab(2:2:end);
 Preprocess_funx = @(Spectra) sqrt(Spectra(:, :, 2:2:end)) - sqrt(Spectra(:, :, 1:2:end));
 
@@ -132,45 +118,6 @@ annotation(figure1,'textbox',...
     'FitBoxToText','off',...
     'EdgeColor','none');
 
-
-
-
-%% 频域对比
-% 定义不同的颜色 (RGB格式)
-colors = [0 0.4470 0.7410;   % 蓝色
-          0.8500 0.3250 0.0980;   % 橙色
-          0.9290 0.6940 0.1250;   % 黄色
-          0.4940 0.1840 0.5560];  % 紫色
-
-for ch = 1:8
-    subplot(2, 8, ch);
-    bd1 = logical((fb>58).*(fb<62));
-    boxplot(squeeze(mean(spectra(bd1, ch, :))), ylab, 'Colors', colors, 'Symbol', '');
-    ylim([-0.2 0.4])
-    % 找到图中的箱子对象并设置颜色
-    h = findobj(gca, 'Tag', 'Box');
-    for j = 1:length(h)
-        patch(get(h(j), 'XData'), get(h(j), 'YData'), colors(5-j, :), ...
-              'FaceAlpha', 0.5, 'EdgeColor', colors(5-j, :), 'linewidth', 0.9); % 颜色设置和边界颜色一致
-    end
-    
-    % 隐藏离群点标记
-    set(findobj(gca, 'Tag', 'Outliers'), 'Visible', 'off');
-    %%%%%%%%%%%%%%%
-    subplot(2, 8, ch+8);
-    bd2 = logical((fb>63).*(fb<67));
-    boxplot(squeeze(mean(spectra(bd2, ch, :))), ylab, 'Colors', colors, 'Symbol', '');
-    ylim([-0.2 0.4])
-    % 找到图中的箱子对象并设置颜色
-    h = findobj(gca, 'Tag', 'Box');
-    for j = 1:length(h)
-        patch(get(h(j), 'XData'), get(h(j), 'YData'), colors(5-j, :), ...
-              'FaceAlpha', 0.5, 'EdgeColor', colors(5-j, :), 'linewidth', 0.9); % 颜色设置和边界颜色一致
-    end
-    
-    % 隐藏离群点标记
-    set(findobj(gca, 'Tag', 'Outliers'), 'Visible', 'off');
-end
 
 
 
