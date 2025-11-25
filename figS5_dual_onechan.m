@@ -1,32 +1,14 @@
-%%
-clear
-clc
-
-option.fs = 1000;
-option.tmin = 0;
-option.tmax = 1;
-option.fpoint = 201;  % 201;
-option.fmax = 150;  % 100;
-option.maxnff = 512;
-option.tps = [-1000 200];
-
-fileuse = 8:53;
-load('E:\pycharm\MyCode\NEO-BCI\Piplinecode\XB_data\readme.mat')
-data_root = 'E:\pycharm\MyCode\NEO-BCI\Piplinecode\XB_data\';
-
-[Spectra, Ylab, fb] = Step0_psd_dataset(Label, data_root, fileuse, option);
-
-%%
+%% one channel check
 clear;clc
 
-load('data.mat')
+load('data\PSDdata.mat')
 freq_func = @(X, fb) X(logical((fb>50).*(fb<150)), :, :);
 Preprocess_funy = @(Ylab) Ylab;
 Preprocess_funx = @(Spectra) bsxfun(@minus, sqrt(Spectra), mean(sqrt(Spectra(:, :, Ylab==100)), 3));
 
 
 
-%% 线性组合
+%% linear comb
 ylab = Preprocess_funy(Ylab);
 X = Preprocess_funx(Spectra);
 X = freq_func(X, fb);
@@ -46,7 +28,7 @@ modelP = cell(length(move), 8);
 Rsquared = cell(length(move), 8);
 
 m = 1;
-% 不同基的拟合效果
+% different basis
 for i = 1:length(base)
     for ch = 1:8
         x_a = mean(X(ismember(ylab, base{i}(1)), :, ch))';
@@ -119,15 +101,7 @@ fig1 = figure('Position', [573,427,402.7,330.7]);
 CC = colormap(slanCM('coolwarm'));
 for i = 1:length(base)
     Ax(i) = axes('Position', FigP(i, :));
-    % imshow('.\paper_figs\cortex.jpg', 'Parent', Ax(i));
-    % Pos = [400, 430;
-    %     380, 350;
-    %     360, 270;
-    %     340, 190;
-    %     240, 505;
-    %     230, 432;
-    %     220, 351;
-    %     210, 269];
+
     Pos = [1.3 0;
         1.3 1;
         1.3 2;
@@ -165,7 +139,6 @@ cbar.Ticks = linspace(cbar.Limits(1), cbar.Limits(2), 7);
 cbar.TickLabels = {'.001', '.010', '.100', '1.00', '.100', '.010', '.001'};
 
 
-% 创建 textbox
 annotation(fig1,'textbox',...
     [0.935 0.593698115109363 0.161410479264961 0.0766051809293418],...
     'String',{'p value'},...
@@ -173,7 +146,6 @@ annotation(fig1,'textbox',...
     'FontName','Arial',...
     'EdgeColor','none');
 
-% 创建 textbox
 annotation(fig1,'textbox',...
     [0.83 0.82 0.223491432828408 0.0907166616268519],...
     'String',{'$W_{a}>W_{b}$'},...
@@ -182,7 +154,6 @@ annotation(fig1,'textbox',...
     'EdgeColor','none', ...
     'Color', [0.717435000000000	0.0511180000000000	0.158737000000000]);
 
-% 创建 textbox
 annotation(fig1,'textbox',...
     [0.83 0.0675414776736203 0.223491432828408 0.090716661626852],...
     'String',{'$W_{a}<W_{b}$'},...
@@ -190,4 +161,5 @@ annotation(fig1,'textbox',...
     'FitBoxToText','off',...
     'EdgeColor','none', ...
     'Color', [0.238948000000000	0.312365000000000	0.765676000000000]);
+
 
