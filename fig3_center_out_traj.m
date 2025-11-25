@@ -1,39 +1,6 @@
-%%
-clear;clc
-rootDir = 'E:\pycharm\NEOdata\TT01';
-Flist = findMatFilesByName(rootDir, 'Center');
-
-useid = 13:75;
-
-
-TimeMat = zeros(24, length(useid));
-
-for i = 1:length(useid)
-    try
-        load(Flist{useid(i)});
-        Control.Tarlist = Control.Tarlist;
-        Behave = Control.Behave(:);
-        for h = 1:size(Behave, 1)
-            TimeMat(h, i) = Behave(h).timecost < 8;
-        end
-    catch
-    end
-   
-end
-        
-clc
-for i = 1:length(useid)
-    Flist{useid(i), 2} = sum(TimeMat(:, i))/24;
-end
-
-
 %% Center-out Task performance
-clear;clc
-rootDir = 'E:\pycharm\NEOdata\TT01';
-Flist = findMatFilesByName(rootDir, 'Center');
-useid = 15:19;  % 11月的可用数据
-% useid = [37 38 39];     % Sing. Move. 4D
-% useid = [31 35 36];     % Sing. & Dual. 4D
+clear; clc
+useid = 15:19;
 
 N = length(useid);
 
@@ -59,8 +26,8 @@ for i = 1:N
     end
 end
 
-clc
-%%
+
+%% trajectory
 Cmaps = [0.7305    0.8320    0.5898;
          0.6196    0.7922    0.8824;
          0.0902    0.7451    0.8118;
@@ -84,7 +51,7 @@ for i = 1:8
     target = 0.4*[cos((i-1)*pi/4) sin((i-1)*pi/4)];
     rectangle('Position',[target(1)+C(1)-0.11, target(2)+C(2)-0.11, 0.11*2, 0.11*2], 'LineWidth', 1.5, ...
         'Curvature',[1 1], 'EdgeColor', [0.00,0.45,0.74], 'FaceColor','none');%[0.30,0.75,0.93]);
-    % scatter(target(1)+C(1), target(2)+C(2), 250, [0.2000 0.5569 0.7922], 'filled', 'MarkerFaceAlpha', 1);
+ 
     for h = 1:72
         if (Pick(h).Target == i)
             if Pick(h).hit
@@ -104,8 +71,7 @@ xticks([]); yticks([]);
 axis equal
 
 
-%% 计算时间累计正确曲线
-
+%% Calculate the time-course of the cumulative accuracy curve
 data = zeros(1, 8);
 for t = 1:8
     data(t) = sum(logical((T < t).*(T>t-1))) / length(T);
@@ -118,7 +84,7 @@ hong = [0.8500 0.3250 0.0980];
 colororder([qing; hong]);
 
 set(gcf, 'Position', [573,481.7, 264,258.7]); %256,276]);
-% 左侧坐标轴（柱状图）
+
 yyaxis left
 bar(1:8, data, 'FaceColor', qing, 'EdgeColor', 'none');
 ylabel('Hit trial histogram', 'FontSize', 11);
@@ -127,7 +93,6 @@ ax = gca;
 ax.YAxis(1).LineWidth = 1.5;
 ax.FontWeight = 'normal';
 
-% 右侧坐标轴（累计折线图）
 yyaxis right
 plot(1:8, cumsum(data), '-', 'LineWidth', 1.3, 'Color', hong);
 hold on
@@ -142,7 +107,7 @@ box off
 xlabel('time (s)', 'FontSize', 11);
 
 
-%% 计算 ITR, trajectory distance ratio，trajectory error，trajectory variability
+%% ITR, trajectory distance ratio，trajectory error，trajectory variability
 clc
 fprintf('mean hit time %.2f+%.2f\n', mean(T(T<8)), std(T(T<8)))
 
@@ -184,8 +149,8 @@ fprintf('TV  %.2f +- %.2f\n', nanmean(TV) / 0.29, nanstd(TV) / 0.29)
 
 %%
 function matFiles = findMatFilesByName(rootDir, searchStr)
-    % 查找文件名包含 searchStr 的 .mat 文件
-    files = dir(fullfile(rootDir, ['**/*' searchStr '*.mat']));  % 例如 *data*.mat
+    files = dir(fullfile(rootDir, ['**/*' searchStr '*.mat']));
     matFiles = arrayfun(@(x) fullfile(x.folder, x.name), files, 'UniformOutput', false);
     matFiles = matFiles(:);
+
 end
