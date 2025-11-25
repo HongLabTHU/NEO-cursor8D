@@ -13,8 +13,7 @@ ylab = Preprocess_funy(Ylab);
 X = Preprocess_funx(Spectra);
 X = freq_func(X, fb);
 
-X = permute(X, [3 1 2]);        % 注意这里
-
+X = permute(X, [3 1 2]); 
 condu = [101 102 103 104 121 122 125 126];
 X = X(ismember(ylab, condu), :, :);
 ylab = ylab(ismember(ylab, condu));
@@ -161,5 +160,6 @@ annotation(fig1,'textbox',...
     'FitBoxToText','off',...
     'EdgeColor','none', ...
     'Color', [0.238948000000000	0.312365000000000	0.765676000000000]);
+
 
 
