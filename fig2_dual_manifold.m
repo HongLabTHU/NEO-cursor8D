@@ -1,10 +1,9 @@
-%%
+%% dual movement regression
 clear;clc
-
-load('data.mat');
+load('data\PSDdata.mat');
 
 X = Spectra(logical((fb>50).*(fb<150)), :, :);
-X = permute(X, [3 1 2]);        % 注意这里
+X = permute(X, [3 1 2]); 
 X = sqrt(X(:, :));
 baseline = mean(X(Ylab==100, :));
 condu = [101 102 103 104 121 122 125 126];
@@ -14,8 +13,7 @@ X = X(ismember(ylab, condu), :);
 ylab = ylab(ismember(ylab, condu));
 
 
-
-%% 线性组合
+%% linear combination
 base = {[101 102], [101 103], [102 104], [103 104]};
 move = {121, 122, 125, 126};
 
@@ -24,7 +22,7 @@ modelP = cell(length(base)+2, length(move));
 Rsquared = cell(length(base)+2, length(move));
 
 
-% 基准拟合效果
+% baseline fitting
 for j = 1:length(move)
     x_p = X(ismember(ylab, move{j}), :);
     [~, score,~,~,explained,~] = pca(x_p');
@@ -40,17 +38,18 @@ for j = 1:length(move)
         mdl = fitlm(x_Self, rg_xp); %, 'Intercept', false);
         Param{1, j} = [Param{1, j}; [mdl.Coefficients{2,1} mdl.Coefficients{3,1}]];
         RS_ = 1 - (1 - mdl.Rsquared.Ordinary) * RSS / RSS_;
-        Rsquared{1, j} = [Rsquared{1, j} RS_]; % 获取拟合模型的 R-squared 值
+        Rsquared{1, j} = [Rsquared{1, j} RS_];
         modelP{1, j} = [modelP{1, j} mdl.ModelFitVsNullModel.Pvalue];
 
         mdl = fitlm(x_Orth, rg_xp); %, 'Intercept', false);
         RS_ = 1 - (1 - mdl.Rsquared.Ordinary) * RSS / RSS_;
-        Rsquared{end, j} = [Rsquared{end, j} RS_]; % 获取拟合模型的 R-squared 值
+        Rsquared{end, j} = [Rsquared{end, j} RS_];
         modelP{end, j} = [modelP{end, j} mdl.ModelFitVsNullModel.Pvalue];
     end
 end
 
-% 不同基的拟合效果
+
+% different basis
 for i = 1:length(base)
     x_a = mean(X(ismember(ylab, base{i}(1)), :))';
     x_b = mean(X(ismember(ylab, base{i}(2)), :))';
@@ -68,10 +67,6 @@ for i = 1:length(base)
     i
 end
 
-% clear mdl rest_base bands
-% histogram(Rsquared{i, j}, 0:0.03:1, 'Normalization', 'percentage');
-
-
 S = zeros(length(base)+2, length(move));
 for i = 1:length(base)+2
     for j = 1:length(move)
@@ -80,7 +75,7 @@ for i = 1:length(base)+2
 end
 
 
-%% 
+%% bar
 Tbox = {'LE&LH', 'LE&RE', 'LH&RH', 'RE&RH'};
 ind = [0.7 2 3 4.3] - 0.2;
 
@@ -121,7 +116,7 @@ figure('Position', [177,502,1237,263]);
  end
 
 
- %% 统计检验mode = 0;
+ %% test
 TTmat = zeros(6, 4);
 for j = 1:4
     for i = 1:6
@@ -129,15 +124,11 @@ for j = 1:4
     end
 end
 
-% plot(ax(1), [0.7 2], [0.98 0.98], 'k', 'LineWidth', 1);
-% text(ax(1), 1.35, 0.99, '***', 'HorizontalAlignment', 'center');
 plot(ax(1), [2 3], [0.96 0.96], 'k', 'LineWidth', 1);
 text(ax(1), 2.5, 0.97, '***', 'HorizontalAlignment', 'center');
 plot(ax(1), [2 4.3], [0.99 0.99], 'k', 'LineWidth', 1);
 text(ax(1), 3.15, 1, '***', 'HorizontalAlignment', 'center');
 
-% plot(ax(2), [0.7 2], [0.98 0.98], 'k', 'LineWidth', 1);
-% text(ax(2), 1.35, 0.99, '***', 'HorizontalAlignment', 'center');
 plot(ax(2), [2 3], [0.96 0.96], 'k', 'LineWidth', 1);
 text(ax(2), 2.5, 0.97, '***', 'HorizontalAlignment', 'center');
 plot(ax(2), [2 4.3], [0.99 0.99], 'k', 'LineWidth', 1);
@@ -148,15 +139,13 @@ text(ax(3), 2.5, 0.97, '***', 'HorizontalAlignment', 'center');
 plot(ax(3), [3 4.3], [0.99 0.99], 'k', 'LineWidth', 1);
 text(ax(3), 3.65, 1, '***', 'HorizontalAlignment', 'center');
 
-% plot(ax(4), [0.7 3], [0.99 0.99], 'k', 'LineWidth', 1);
-% text(ax(4), 1.85, 1, '**', 'HorizontalAlignment', 'center');
 plot(ax(4), [2 3], [0.96 0.96], 'k', 'LineWidth', 1);
 text(ax(4), 2.5, 0.97, '***', 'HorizontalAlignment', 'center');
 plot(ax(4), [3 4.3], [0.99 0.99], 'k', 'LineWidth', 1);
 text(ax(4), 3.65, 1, '***', 'HorizontalAlignment', 'center');
 
 
-%% 散点图
+%% scatter
 Tbox = {'LE&LH', 'LE&RE', 'LH&RH', 'RE&RH'}; % 
 A1 = {'LE', 'LE', 'LH', 'RE';
       'LH', 'RE', 'RH', 'RH'};
@@ -180,13 +169,12 @@ for i = 1:4
     axis(ax1, [-1.5 3 -1.5 3]);
     title(Tbox{i}, 'FontName', 'Arial', 'FontSize', 10);
 
-    % 统计图
     ax2 = axes("Position", [0.29 0.29 0.5*sqrt(2) 0.5*sqrt(2)]);
     resp = (Param{i+1, i}(ZZ, 1) - Param{i+1, i}(ZZ, 2))/sqrt(2);
     histogram(ax2, resp, 20, 'FaceAlpha', 0.25, 'FaceColor', [0.7 0.7 0.7],...
         'EdgeColor','none', 'Normalization','probability');
     hold on;
-    [kde, xi] = ksdensity(resp, 'Bandwidth', 0.1); % 可调整带宽
+    [kde, xi] = ksdensity(resp, 'Bandwidth', 0.1);
     plot(ax2, xi, kde/4, 'LineWidth', 0.8, 'Color', [0.6 0.6 0.6]);
     yline(0);
     axis(ax2, [-2.25 2.25 0 1.2]);
@@ -195,11 +183,4 @@ for i = 1:4
 end
 
 
-% cbar = colorbar(); cbar.Limits = [0.75 1];
-% annotation(fig1, 'textbox', 'Position', [0.25*i-0.045, 0.10,0.0299, 0.0932],...
-% 'String', '$R^{2}$',...
-% 'HorizontalAlignment','center',...
-% 'FontSize', 9,...
-% 'Interpreter', 'latex', ...
-% 'FitBoxToText','off',...
-% 'EdgeColor','none');
+
