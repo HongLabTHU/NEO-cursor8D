@@ -12,7 +12,7 @@ Source code for the paper "Fine grained two-dimensional cursor control with epid
 1. Clone or copy the repository to your local machine.
 2. MATLAB:
    - Open MATLAB and add the project folder to the MATLAB path:
-       addpath(genpath('NEO-cursor8D'))
+     >> addpath(genpath('NEO-cursor8D'))
    - Ensure required toolboxes are installed (use Add-Ons or matlab.addons.installedAddons).
 3. Python (optional):
    - Create a virtual environment and install common packages:
@@ -23,8 +23,8 @@ Source code for the paper "Fine grained two-dimensional cursor control with epid
 ## Quick start — entry points
 1. Add project folder to MATLAB path (see above).
 2. Typical run commands (replace with the actual entry script found):
-     fig1s_single_movement
-     fig2ac_single_movement
+     >> fig1s_single_movement
+     >> fig2ac_single_movement
      ...
 
 
