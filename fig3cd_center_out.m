@@ -1,6 +1,10 @@
 %% Center-out Task performance
 clear; clc
-useid = 15:19;
+rootDir = 'behave\centerout\';
+Flist = findMatFilesByName(rootDir, 'Center');
+useid = 1:5;       % Sing. & Dual. 8D
+% useid = 6:8;     % Sing. Move. 4D
+% useid = 9:11;    % Sing. & Dual. 4D
 
 N = length(useid);
 
@@ -152,5 +156,5 @@ function matFiles = findMatFilesByName(rootDir, searchStr)
     files = dir(fullfile(rootDir, ['**/*' searchStr '*.mat']));
     matFiles = arrayfun(@(x) fullfile(x.folder, x.name), files, 'UniformOutput', false);
     matFiles = matFiles(:);
-
 end
+
