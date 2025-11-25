@@ -2,7 +2,7 @@
 clear
 clc
 
-load('data.mat');
+load('data\PSDdata.mat');
 
 Preprocess_funy = @(Ylab) Ylab(2:2:end);
 Preprocess_funx = @(Spectra) sqrt(Spectra(:, :, 2:2:end)) - sqrt(Spectra(:, :, 1:2:end));
@@ -114,6 +114,7 @@ annotation(figure1,'textbox',...
     'FontSize',9,...
     'FitBoxToText','off',...
     'EdgeColor','none');
+
 
 
 
