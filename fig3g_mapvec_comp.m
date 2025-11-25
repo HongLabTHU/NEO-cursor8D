@@ -1,4 +1,4 @@
-%% Center-out Task performance
+%% Center-out mapping vector compare
 clear;clc
 rootDir = 'E:\pycharm\NEOdata\TT01';
 Flist = findMatFilesByName(rootDir, 'Center');
@@ -7,8 +7,6 @@ idxf = [37 38 39;
      31 35 36;
      27 28 33];
 
-
-%% 对比不同方案结果
 ITR = zeros(3, 9);
 Fitts_ITR = zeros(3, 9);
 
@@ -178,4 +176,5 @@ function matFiles = findMatFilesByName(rootDir, searchStr)
     matFiles = arrayfun(@(x) fullfile(x.folder, x.name), files, 'UniformOutput', false);
     matFiles = matFiles(:);
 end
+
 
